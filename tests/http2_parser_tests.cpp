@@ -42,7 +42,7 @@ public:
 		{
 			size_t non_header_size = header_.size() - header_end - 4;
 
-			auto base = static_cast<machine>(this);
+			auto base = static_cast<machine*>(this);
 
 			base->template transition<body>();
 			base->post(input + strlen(input) - non_header_size);
