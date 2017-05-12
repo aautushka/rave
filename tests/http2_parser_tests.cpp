@@ -62,28 +62,6 @@ struct get_index<T, type_list<>>
 namespace tdd
 {
 
-template <typename http> class body;
-template <typename http> class header;
-
-template <typename machine>
-class body
-{
-public:
-
-	void react(const char* input)
-	{
-		message_.append(input);	
-	}
-
-	std::string get_message()
-	{
-		return message_;
-	}
-
-private:
-	std::string message_;
-};
-
 template <template <typename> typename new_state, typename machine, template <typename> typename old_state>
 void transition(old_state<machine>* state)
 {
@@ -97,36 +75,6 @@ void post(state<machine>* s, const char* event)
 	auto base = static_cast<machine*>(s);
 	base->post(event);
 }
-
-template <typename machine>
-class header
-{
-public:
-	void react(const char* input)
-	{
-		header_.append(input);
-		size_t header_end = header_.find("\r\n\r\n");
-
-		if (header_end != std::string::npos)
-		{
-			size_t non_header_size = header_.size() - header_end - 4;
-
-			auto base = static_cast<machine*>(this);
-
-			transition<body>(this);
-			post(this, input + strlen(input) - non_header_size); 
-		}
-	}
-
-	std::string get_header()
-	{
-		return header_;
-	}
-
-private:
-	std::string header_;
-};
-
 
 template <int N, typename T>
 struct dispatcher
@@ -258,7 +206,56 @@ private:
 	int state_ = 0;
 };
 
-class http2 : public machine<http2, header, body>
+template <typename machine>
+class reading_message
+{
+public:
+
+	void react(const char* input)
+	{
+		message_.append(input);	
+	}
+
+	std::string get_message()
+	{
+		return message_;
+	}
+
+private:
+	std::string message_;
+};
+
+template <typename machine>
+class reading_header
+{
+public:
+	void react(const char* input)
+	{
+		header_.append(input);
+		size_t header_end = header_.find("\r\n\r\n");
+
+		if (header_end != std::string::npos)
+		{
+			size_t non_header_size = header_.size() - header_end - 4;
+
+			auto base = static_cast<machine*>(this);
+
+			transition<reading_message>(this);
+			post(this, input + strlen(input) - non_header_size); 
+		}
+	}
+
+	std::string get_header()
+	{
+		return header_;
+	}
+
+private:
+	std::string header_;
+};
+
+
+class http2 : public machine<http2, reading_header, reading_message>
 {
 };
 
