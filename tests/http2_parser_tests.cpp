@@ -187,7 +187,7 @@ struct dispatcher<3, T> : public T
 	}
 };
 
-template <typename T, template <class> ... Ts>
+template <typename T, template <class> class ... Ts>
 class machine : public dispatcher<get_size<type_list<Ts<T> ...>>::value, type_list<Ts<T> ...>>
 {
 public:
