@@ -6,8 +6,8 @@
 namespace tdd
 {
 
-template <typename http2> class body;
-template <typename http2> class header;
+template <typename http> class body;
+template <typename http> class header;
 
 template <typename T>
 class state
