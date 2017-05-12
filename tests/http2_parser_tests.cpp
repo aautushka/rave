@@ -45,7 +45,7 @@ public:
 
 			http* base = static_cast<http*>(this);
 
-			base->transition(1);
+			base->template transition<body<http>>();
 			base->post(input + strlen(input) - non_header_size);
 		}
 	}
@@ -99,6 +99,19 @@ template <>
 struct get_size<type_list<>>
 {
 	enum {value = 0};
+};
+
+
+template <typename T, typename List>
+struct get_index
+{
+	enum { value = std::is_same<T, typename List::head>::value ? 0 : 1 + get_index<T, typename List::tail>::value };
+};
+
+template <typename T>
+struct get_index<T, type_list<>>
+{
+	enum { value = 0 };
 };
 
 template <int N, typename T>
@@ -206,9 +219,10 @@ public:
 		react(event);
 	}
 
-	void transition(int state)
+	template <typename State>
+	void transition()
 	{
-		state_ = state;
+		state_ = get_index<State, base_type>::value;
 	}
 
 	void react(const char* event)
