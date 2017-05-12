@@ -51,7 +51,7 @@ public:
 
 			http* base = static_cast<http*>(this);
 
-			base->transition(state<body<http>>());
+			base->transition(1);
 			base->post(input + strlen(input) - non_header_size);
 		}
 	}
@@ -65,12 +65,43 @@ private:
 	std::string header_;
 };
 
-class http2 : public header<http2>, public body<http2>
+class foo{};
+class bar{};
+
+template <typename ... Ts> class type_list;
+
+template <typename T, typename ... Ts>
+class type_list<T, Ts ...> : public T, public type_list<Ts ...>
 {
 public:
+	using head = T;
+	using tail = type_list<Ts ...>;
+};
+
+template <>
+struct type_list<> 
+{ 
+};
+
+template <int N, typename List>
+struct get_type
+{
+	using type = typename get_type<N - 1, typename List::tail>::type;
+};
+
+template <typename List>
+struct get_type<0, List>
+{
+	using type = typename List::head;	
+};
+
+class http2 : public type_list<header<http2>, body<http2>>
+{
+public:
+	using  base_type = type_list<header<http2>, body<http2>>;
+
 	http2()
 	{
-		state_ = [=](const char* input){this->header::react(input);};
 	}
 
 	void react(const char* event)
@@ -82,7 +113,21 @@ public:
 			event = pending_.front();
 			pending_.pop_front();
 
-			state_(event);
+			switch (state_)
+			{
+			case 0:
+				using state0 = get_type<0, base_type>::type;
+				this->state0::react(event);
+				break;
+			case 1:
+				using state1 = get_type<1, base_type>::type;
+				this->state1::react(event);
+				break;
+			case 2:
+				//using state1 = get_type<2, base_type>::type;
+				//this->state1::react(event);
+				break;
+			};
 		}
 	}
 
@@ -96,16 +141,14 @@ public:
 		react(event);
 	}
 
-	template <typename state>
-	void transition(state)
+	void transition(int state)
 	{
-		using state_type = typename state::type;
-		state_ = [=](const char* input){this->state_type::react(input);};
+		state_ = state;
 	}
 
 private:
-	std::function<void(const char*)> state_;
 	std::list<const char*> pending_;
+	int state_ = 0;
 };
 
 }
