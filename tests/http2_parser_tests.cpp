@@ -187,12 +187,12 @@ struct dispatcher<3, T> : public T
 	}
 };
 
-template <typename ... Ts>
-class machine : public dispatcher<get_size<type_list<Ts ...>>::value, type_list<Ts ...>>
+template <typename T, template <class> ... Ts>
+class machine : public dispatcher<get_size<type_list<Ts<T> ...>>::value, type_list<Ts<T> ...>>
 {
 public:
-	using base_type = type_list<Ts ...>;
-	using dispatcher_type = dispatcher<get_size<type_list<Ts ...>>::value, type_list<Ts ...>>;
+	using base_type = type_list<Ts<T> ...>;
+	using dispatcher_type = dispatcher<get_size<type_list<Ts<T> ...>>::value, type_list<Ts<T> ...>>;
 
 	machine()
 	{
@@ -232,7 +232,7 @@ private:
 	int state_ = 0;
 };
 
-class http2 : public machine<header<http2>, body<http2>>
+class http2 : public machine<http2, header, body>
 {
 };
 
