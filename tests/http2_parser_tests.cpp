@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <functional>
+#include <type_traits>
 #include <list>
 
 namespace tdd
@@ -107,16 +108,95 @@ struct get_size<type_list<>>
 	enum {value = 0};
 };
 
-class http2 : public type_list<header<http2>, body<http2>>
+template <int N, typename T>
+struct dispatcher
+{
+	void dispatch(int state, const char* event);
+};
+
+template <typename T>
+struct dispatcher<0, T>
+{
+	static_assert(get_size<T>::value == 0, "");
+	using dispatcher_type = dispatcher<0, T>;
+	void dispatch(int state, const char* event)
+	{
+	};
+};
+
+template <typename T>
+struct dispatcher<1, T> : public T
+{
+	static_assert(get_size<T>::value == 1, "");
+	using dispatcher_type = dispatcher<1, T>;
+	void dispatch(int state, const char* event)
+	{
+		switch (state)
+		{
+		case 0:
+			using state0 = typename get_type<0, T>::type;
+			this->state0::react(event);
+			static_cast<state0*>(this)->react(event);
+			break;
+		};
+	};
+};
+
+template <typename T>
+struct dispatcher<2, T> : public T
+{
+	static_assert(get_size<T>::value == 2, "");
+	using dispatcher_type = dispatcher<2, T>;
+	void dispatch(int state, const char* event)
+	{
+		switch (state)
+		{
+		case 0:
+			using state0 = typename get_type<0, T>::type;
+			this->state0::react(event);
+			break;
+		case 1:
+			using state1 = typename get_type<1, T>::type;
+			this->state1::react(event);
+			break;
+		};
+	};
+};
+template <typename T>
+struct dispatcher<3, T> : public T
+{
+	static_assert(get_size<T>::value == 3, "");
+	using dispatcher_type = dispatcher<3, T>;
+	void dispatch(int state, const char* event)
+	{
+		switch (state)
+		{
+		case 0:
+			using state0 = typename get_type<0, T>::type;
+			this->state0::react(event);
+			break;
+		case 1:
+			using state1 = typename get_type<1, T>::type;
+			this->state1::react(event);
+			break;
+		case 2:
+			using state2 = typename get_type<2, T>::type;
+			this->state2::react(event);
+			break;
+		};
+	}
+};
+
+template <typename ... Ts>
+class machine : public dispatcher<get_size<type_list<Ts ...>>::value, type_list<Ts ...>>
 {
 public:
-	using  base_type = type_list<header<http2>, body<http2>>;
+	using base_type = type_list<Ts ...>;
+	using dispatcher_type = dispatcher<get_size<type_list<Ts ...>>::value, type_list<Ts ...>>;
 
-	http2()
+	machine()
 	{
 	}
-
-	void react(const char* event);
 
 	void post(const char* event)
 	{
@@ -133,44 +213,30 @@ public:
 		state_ = state;
 	}
 
+	void react(const char* event)
+	{
+		pending_.push_back(event);
+		
+		while (!pending_.empty())
+		{
+			event = pending_.front();
+			pending_.pop_front();
+
+			dispatcher_type::dispatch(state_, event);
+		}
+	}
+
 private:
-	template <int N>
-	void dispatch(const char* event);
 
 	std::list<const char*> pending_;
 	int state_ = 0;
 };
 
-template <> void http2::dispatch<2>(const char* event)
+class http2 : public machine<header<http2>, body<http2>>
 {
-	switch (state_)
-	{
-	case 0:
-		using state0 = get_type<0, base_type>::type;
-		this->state0::react(event);
-		break;
-	case 1:
-		using state1 = get_type<1, base_type>::type;
-		this->state1::react(event);
-		break;
-	};
 };
 
-
-void http2::react(const char* event)
-{
-	pending_.push_back(event);
-	
-	while (!pending_.empty())
-	{
-		event = pending_.front();
-		pending_.pop_front();
-
-		dispatch<get_size<base_type>::value>(event);
-	}
-}
-
-}
+} // namespace tdd
 
 struct http2_parser_test : public ::testing::Test
 {
