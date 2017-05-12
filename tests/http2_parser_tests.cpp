@@ -3,6 +3,62 @@
 #include <type_traits>
 #include <list>
 
+namespace meta
+{
+
+template <typename ... Ts> class type_list;
+
+template <typename T, typename ... Ts>
+class type_list<T, Ts ...> : public T, public type_list<Ts ...>
+{
+public:
+	using head = T;
+	using tail = type_list<Ts ...>;
+};
+
+template <>
+struct type_list<> 
+{ 
+};
+
+template <int N, typename List>
+struct get_type
+{
+	using type = typename get_type<N - 1, typename List::tail>::type;
+};
+
+template <typename List>
+struct get_type<0, List>
+{
+	using type = typename List::head;	
+};
+
+template <typename List>
+struct get_size
+{
+	enum {value = 1 + get_size<typename List::tail>::value };
+};
+
+template <>
+struct get_size<type_list<>>
+{
+	enum {value = 0};
+};
+
+
+template <typename T, typename List>
+struct get_index
+{
+	enum { value = std::is_same<T, typename List::head>::value ? 0 : 1 + get_index<T, typename List::tail>::value };
+};
+
+template <typename T>
+struct get_index<T, type_list<>>
+{
+	enum { value = 0 };
+};
+}
+
 namespace tdd
 {
 
@@ -71,60 +127,6 @@ private:
 	std::string header_;
 };
 
-class foo{};
-class bar{};
-
-template <typename ... Ts> class type_list;
-
-template <typename T, typename ... Ts>
-class type_list<T, Ts ...> : public T, public type_list<Ts ...>
-{
-public:
-	using head = T;
-	using tail = type_list<Ts ...>;
-};
-
-template <>
-struct type_list<> 
-{ 
-};
-
-template <int N, typename List>
-struct get_type
-{
-	using type = typename get_type<N - 1, typename List::tail>::type;
-};
-
-template <typename List>
-struct get_type<0, List>
-{
-	using type = typename List::head;	
-};
-
-template <typename List>
-struct get_size
-{
-	enum {value = 1 + get_size<typename List::tail>::value };
-};
-
-template <>
-struct get_size<type_list<>>
-{
-	enum {value = 0};
-};
-
-
-template <typename T, typename List>
-struct get_index
-{
-	enum { value = std::is_same<T, typename List::head>::value ? 0 : 1 + get_index<T, typename List::tail>::value };
-};
-
-template <typename T>
-struct get_index<T, type_list<>>
-{
-	enum { value = 0 };
-};
 
 template <int N, typename T>
 struct dispatcher
@@ -135,7 +137,7 @@ struct dispatcher
 template <typename T>
 struct dispatcher<0, T>
 {
-	static_assert(get_size<T>::value == 0, "");
+	static_assert(meta::get_size<T>::value == 0, "");
 
 	template <typename Event>	
 	void dispatch(int state, Event event)
@@ -146,7 +148,7 @@ struct dispatcher<0, T>
 template <typename T>
 struct dispatcher<1, T> : public T
 {
-	static_assert(get_size<T>::value == 1, "");
+	static_assert(meta::get_size<T>::value == 1, "");
 	using dispatcher_type = dispatcher<1, T>;
 
 	template <typename Event>
@@ -155,7 +157,7 @@ struct dispatcher<1, T> : public T
 		switch (state)
 		{
 		case 0:
-			using state0 = typename get_type<0, T>::type;
+			using state0 = typename meta::get_type<0, T>::type;
 			this->state0::react(event);
 			static_cast<state0*>(this)->react(event);
 			break;
@@ -166,7 +168,7 @@ struct dispatcher<1, T> : public T
 template <typename T>
 struct dispatcher<2, T> : public T
 {
-	static_assert(get_size<T>::value == 2, "");
+	static_assert(meta::get_size<T>::value == 2, "");
 
 	template <typename Event>
 	void dispatch(int state, Event event)
@@ -174,11 +176,11 @@ struct dispatcher<2, T> : public T
 		switch (state)
 		{
 		case 0:
-			using state0 = typename get_type<0, T>::type;
+			using state0 = typename meta::get_type<0, T>::type;
 			this->state0::react(event);
 			break;
 		case 1:
-			using state1 = typename get_type<1, T>::type;
+			using state1 = typename meta::get_type<1, T>::type;
 			this->state1::react(event);
 			break;
 		};
@@ -187,7 +189,7 @@ struct dispatcher<2, T> : public T
 template <typename T>
 struct dispatcher<3, T> : public T
 {
-	static_assert(get_size<T>::value == 3, "");
+	static_assert(meta::get_size<T>::value == 3, "");
 
 	template <typename Event>
 	void dispatch(int state, Event event)
@@ -195,15 +197,15 @@ struct dispatcher<3, T> : public T
 		switch (state)
 		{
 		case 0:
-			using state0 = typename get_type<0, T>::type;
+			using state0 = typename meta::get_type<0, T>::type;
 			this->state0::react(event);
 			break;
 		case 1:
-			using state1 = typename get_type<1, T>::type;
+			using state1 = typename meta::get_type<1, T>::type;
 			this->state1::react(event);
 			break;
 		case 2:
-			using state2 = typename get_type<2, T>::type;
+			using state2 = typename meta::get_type<2, T>::type;
 			this->state2::react(event);
 			break;
 		};
@@ -211,11 +213,11 @@ struct dispatcher<3, T> : public T
 };
 
 template <typename T, template <class> class ... Ts>
-class machine : public dispatcher<get_size<type_list<Ts<T> ...>>::value, type_list<Ts<T> ...>>
+class machine : public dispatcher<meta::get_size<meta::type_list<Ts<T> ...>>::value, meta::type_list<Ts<T> ...>>
 {
 public:
-	using base_type = type_list<Ts<T> ...>;
-	using dispatcher_type = dispatcher<get_size<type_list<Ts<T> ...>>::value, type_list<Ts<T> ...>>;
+	using base_type = meta::type_list<Ts<T> ...>;
+	using dispatcher_type = dispatcher<meta::get_size<meta::type_list<Ts<T> ...>>::value, meta::type_list<Ts<T> ...>>;
 
 	machine()
 	{
@@ -234,7 +236,7 @@ public:
 	template <template <class> class State>
 	void transition()
 	{
-		state_ = get_index<State<T>, base_type>::value;
+		state_ = meta::get_index<State<T>, base_type>::value;
 	}
 
 	void react(const char* event)
