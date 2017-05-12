@@ -95,6 +95,18 @@ struct get_type<0, List>
 	using type = typename List::head;	
 };
 
+template <typename List>
+struct get_size
+{
+	enum {value = 1 + get_size<typename List::tail>::value };
+};
+
+template <>
+struct get_size<type_list<>>
+{
+	enum {value = 0};
+};
+
 class http2 : public type_list<header<http2>, body<http2>>
 {
 public:
@@ -104,32 +116,7 @@ public:
 	{
 	}
 
-	void react(const char* event)
-	{
-		pending_.push_back(event);
-		
-		while (!pending_.empty())
-		{
-			event = pending_.front();
-			pending_.pop_front();
-
-			switch (state_)
-			{
-			case 0:
-				using state0 = get_type<0, base_type>::type;
-				this->state0::react(event);
-				break;
-			case 1:
-				using state1 = get_type<1, base_type>::type;
-				this->state1::react(event);
-				break;
-			case 2:
-				//using state1 = get_type<2, base_type>::type;
-				//this->state1::react(event);
-				break;
-			};
-		}
-	}
+	void react(const char* event);
 
 	void post(const char* event)
 	{
@@ -147,9 +134,41 @@ public:
 	}
 
 private:
+	template <int N>
+	void dispatch(const char* event);
+
 	std::list<const char*> pending_;
 	int state_ = 0;
 };
+
+template <> void http2::dispatch<2>(const char* event)
+{
+	switch (state_)
+	{
+	case 0:
+		using state0 = get_type<0, base_type>::type;
+		this->state0::react(event);
+		break;
+	case 1:
+		using state1 = get_type<1, base_type>::type;
+		this->state1::react(event);
+		break;
+	};
+};
+
+
+void http2::react(const char* event)
+{
+	pending_.push_back(event);
+	
+	while (!pending_.empty())
+	{
+		event = pending_.front();
+		pending_.pop_front();
+
+		dispatch<get_size<base_type>::value>(event);
+	}
+}
 
 }
 
