@@ -9,7 +9,6 @@ namespace tdd
 template <typename http> class body;
 template <typename http> class header;
 
-
 template <typename machine>
 class body
 {
@@ -29,6 +28,20 @@ private:
 	std::string message_;
 };
 
+template <template <typename> typename new_state, typename machine, template <typename> typename old_state>
+void transition(old_state<machine>* state)
+{
+	auto base = static_cast<machine*>(state);
+	base->template transition<new_state>();
+}
+
+template <typename machine, template <typename> typename state>
+void post(state<machine>* s, const char* event)
+{
+	auto base = static_cast<machine*>(s);
+	base->post(event);
+}
+
 template <typename machine>
 class header
 {
@@ -44,8 +57,8 @@ public:
 
 			auto base = static_cast<machine*>(this);
 
-			base->template transition<body>();
-			base->post(input + strlen(input) - non_header_size);
+			transition<body>(this);
+			post(this, input + strlen(input) - non_header_size); 
 		}
 	}
 
