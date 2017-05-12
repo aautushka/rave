@@ -25,11 +25,6 @@ public:
 		message_.append(input);	
 	}
 
-	void react(const char input)
-	{
-		message_.append(1, input);
-	}
-
 	std::string get_message()
 	{
 		return message_;
@@ -45,9 +40,9 @@ class header : public state<header<http>>
 public:
 	using self_type = header;
 
-	void react(const char* input, int size)
+	void react(const char* input)
 	{
-		header_.append(input, size);
+		header_.append(input);
 		size_t header_end = header_.find("\r\n\r\n");
 
 		if (header_end != std::string::npos)
@@ -59,16 +54,6 @@ public:
 			base->transition(state<body<http>>());
 			base->post(input + strlen(input) - non_header_size);
 		}
-	}
-
-	void react(char input)
-	{
-		react(&input, 1);
-	}
-
-	void react(const char* input)
-	{
-		react(input, strlen(input));
 	}
 
 	std::string get_header()
@@ -101,11 +86,6 @@ public:
 		}
 	}
 
-	void react(char event)
-	{
-		//state_(event);
-	}
-
 	void post(const char* event)
 	{
 		pending_.push_back(event);
@@ -123,8 +103,6 @@ public:
 		state_ = [=](const char* input){this->state_type::react(input);};
 	}
 
-	template <typename T>
-	void hello(T t) { }
 private:
 	std::function<void(const char*)> state_;
 	std::list<const char*> pending_;
