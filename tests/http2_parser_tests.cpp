@@ -9,15 +9,8 @@ namespace tdd
 template <typename http> class body;
 template <typename http> class header;
 
-template <typename T>
-class state
-{
-public:
-	using type = T;
-};
-
 template <typename http>
-class body : public state<body<http>>
+class body 
 {
 public:
 
@@ -36,7 +29,7 @@ private:
 };
 
 template <typename http>
-class header : public state<header<http>>
+class header
 {
 public:
 	using self_type = header;
@@ -118,8 +111,9 @@ template <typename T>
 struct dispatcher<0, T>
 {
 	static_assert(get_size<T>::value == 0, "");
-	using dispatcher_type = dispatcher<0, T>;
-	void dispatch(int state, const char* event)
+
+	template <typename Event>	
+	void dispatch(int state, Event event)
 	{
 	};
 };
@@ -129,7 +123,9 @@ struct dispatcher<1, T> : public T
 {
 	static_assert(get_size<T>::value == 1, "");
 	using dispatcher_type = dispatcher<1, T>;
-	void dispatch(int state, const char* event)
+
+	template <typename Event>
+	void dispatch(int state, Event event)
 	{
 		switch (state)
 		{
@@ -146,8 +142,9 @@ template <typename T>
 struct dispatcher<2, T> : public T
 {
 	static_assert(get_size<T>::value == 2, "");
-	using dispatcher_type = dispatcher<2, T>;
-	void dispatch(int state, const char* event)
+
+	template <typename Event>
+	void dispatch(int state, Event event)
 	{
 		switch (state)
 		{
@@ -166,8 +163,9 @@ template <typename T>
 struct dispatcher<3, T> : public T
 {
 	static_assert(get_size<T>::value == 3, "");
-	using dispatcher_type = dispatcher<3, T>;
-	void dispatch(int state, const char* event)
+
+	template <typename Event>
+	void dispatch(int state, Event event)
 	{
 		switch (state)
 		{
