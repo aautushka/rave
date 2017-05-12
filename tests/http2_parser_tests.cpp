@@ -9,8 +9,9 @@ namespace tdd
 template <typename http> class body;
 template <typename http> class header;
 
+
 template <typename http>
-class body 
+class body
 {
 public:
 
@@ -32,8 +33,6 @@ template <typename http>
 class header
 {
 public:
-	using self_type = header;
-
 	void react(const char* input)
 	{
 		header_.append(input);
@@ -45,7 +44,7 @@ public:
 
 			http* base = static_cast<http*>(this);
 
-			base->template transition<body<http>>();
+			base->template transition<body>();
 			base->post(input + strlen(input) - non_header_size);
 		}
 	}
@@ -219,10 +218,10 @@ public:
 		react(event);
 	}
 
-	template <typename State>
+	template <template <class> class State>
 	void transition()
 	{
-		state_ = get_index<State, base_type>::value;
+		state_ = get_index<State<T>, base_type>::value;
 	}
 
 	void react(const char* event)
