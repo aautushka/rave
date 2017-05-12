@@ -10,7 +10,7 @@ template <typename http> class body;
 template <typename http> class header;
 
 
-template <typename http>
+template <typename machine>
 class body
 {
 public:
@@ -29,7 +29,7 @@ private:
 	std::string message_;
 };
 
-template <typename http>
+template <typename machine>
 class header
 {
 public:
@@ -42,7 +42,7 @@ public:
 		{
 			size_t non_header_size = header_.size() - header_end - 4;
 
-			http* base = static_cast<http*>(this);
+			auto base = static_cast<machine>(this);
 
 			base->template transition<body>();
 			base->post(input + strlen(input) - non_header_size);
