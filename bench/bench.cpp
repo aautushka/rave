@@ -279,10 +279,9 @@ namespace v5
 namespace msm = boost::msm;
 namespace mpl = boost::mpl;
 
-struct event
-{
-	char ch;
-};
+struct event_a { };
+
+struct event_b { };
 
 class machine_def : public msm::front::state_machine_def<machine_def>
 {
@@ -317,19 +316,21 @@ public:
 
 	typedef as initial_state;
 
-	void process_as(const event&)
+	void process_as(const event_a&)
 	{
 		++as_;
 	}
 
-	void process_bs(const event&)
+	void process_bs(const event_b&)
 	{
 		++bs_;
 	}
 
 	struct transition_table: mpl::vector<
-		a_row<as, event, bs, &machine_def::process_as>,
-		a_row<bs, event, as, &machine_def::process_bs>
+		a_row<as, event_b, bs, &machine_def::process_bs>,
+		a_row<as, event_a, as, &machine_def::process_as>,
+		a_row<bs, event_b, bs, &machine_def::process_bs>,
+		a_row<bs, event_a, as, &machine_def::process_as>
 		> {};
 
 	template <class FSM, class Event>
@@ -353,7 +354,14 @@ public:
 
 	void react(char ch)
 	{
-		m_.process_event(event{ch});
+		if (ch == 'a')
+		{
+			m_.process_event(event_a());
+		}
+		else 
+		{
+			m_.process_event(event_b());
+		}
 	}
 
 private:
@@ -387,7 +395,6 @@ state_machine(benchmark::State& state)
 BENCHMARK_TEMPLATE(state_machine, machine1);
 BENCHMARK_TEMPLATE(state_machine, machine2);
 BENCHMARK_TEMPLATE(state_machine, machine3);
-BENCHMARK_TEMPLATE(state_machine, machine4);
 BENCHMARK_TEMPLATE(state_machine, machine4);
 BENCHMARK_TEMPLATE(state_machine, machine5);
 
