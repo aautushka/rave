@@ -198,6 +198,17 @@ public:
 
 	void react(char ch)
 	{
+		if (ch == 'a')
+		{
+			++as_;
+		}
+		else
+		{
+			auto base = static_cast<machine*>(this);
+
+			base->transition(state<bs<machine>>());
+			base->send(ch);
+		}
 	}
 
 private:
@@ -210,10 +221,17 @@ class bs : public state<bs<machine>>
 public:
 	void react(char ch)
 	{
-		//http* base = static_cast<http*>(this);
+		if (ch == 'b')
+		{
+			++bs_;
+		}
+		else
+		{
+			auto base = static_cast<machine*>(this);
 
-		//base->transition(state<body<http>>());
-		//base->post(input + strlen(input) - non_header_size);
+			base->transition(state<as<machine>>());
+			base->send(ch);
+		}
 	}
 
 private:
