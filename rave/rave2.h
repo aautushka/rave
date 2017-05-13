@@ -1,10 +1,8 @@
-#pragma once 
+#pragma once
 #include "meta.h"
 
-namespace rave
+namespace rave2
 {
-
-using event_t = char;
 
 template <template <typename> typename new_state, typename machine, template <typename> typename old_state>
 void transition(old_state<machine>* state)
@@ -13,15 +11,15 @@ void transition(old_state<machine>* state)
 	base->template transition<new_state>();
 }
 
-template <typename machine, template <typename> typename state>
-void post(state<machine>* s, event_t event)
+template <typename machine, template <typename> typename state, typename Event>
+void post(state<machine>* s, Event event)
 {
 	auto base = static_cast<machine*>(s);
 	base->post(event);
 }
 
-template <typename machine, template <typename> typename state>
-void send(state<machine>* s, event_t event)
+template <typename machine, template <typename> typename state, typename Event>
+void send(state<machine>* s, Event event)
 {
 	auto base = static_cast<machine*>(s);
 	base->send(event);
@@ -30,7 +28,8 @@ void send(state<machine>* s, event_t event)
 template <int N, typename T>
 struct dispatcher
 {
-	void dispatch(int state, event_t event);
+	template <typename Event>
+	void dispatch(int state, Event event);
 };
 
 template <typename T>
@@ -122,12 +121,14 @@ public:
 	{
 	}
 
-	void post(event_t event)
+	template <typename Event>
+	void post(Event event)
 	{
 		send(event);
 	}
 
-	void send(event_t event)
+	template <typename Event>
+	void send(Event event)
 	{
 		react(event);
 	}
@@ -138,7 +139,8 @@ public:
 		state_ = meta::get_index<State<T>, base_type>::value;
 	}
 
-	void react(event_t event)
+	template <typename Event>
+	void react(Event event)
 	{
 		dispatcher_type::dispatch(state_, event);
 	}
