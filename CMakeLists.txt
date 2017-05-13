@@ -5,3 +5,4 @@ project(rave)
 add_compile_options(-std=gnu++1y)
 
 add_subdirectory(tests)
+add_subdirectory(bench)
