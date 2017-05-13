@@ -8,6 +8,7 @@
 #include "rave/m6.h"
 #include "rave/m7.h"
 #include "rave/m8.h"
+#include "rave/m9.h"
 
 template <class T> void
 state_machine(benchmark::State& state) 
@@ -37,5 +38,6 @@ BENCHMARK_TEMPLATE(state_machine, m5::machine);
 BENCHMARK_TEMPLATE(state_machine, m6::machine);
 BENCHMARK_TEMPLATE(state_machine, m7::machine);
 BENCHMARK_TEMPLATE(state_machine, m8::machine);
+BENCHMARK_TEMPLATE(state_machine, m9::machine);
 
 BENCHMARK_MAIN();

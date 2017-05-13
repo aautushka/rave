@@ -181,7 +181,7 @@ public:
 
 	void post(event_t event)
 	{
-		pending_.push_back(event);
+		send(event);
 	}
 
 	void send(event_t event)
@@ -197,23 +197,11 @@ public:
 
 	void react(event_t event)
 	{
-		/*pending_.push_back(event);
-		
-		while (!pending_.empty())
-		{
-			event = pending_.front();
-			pending_.pop_front();
-
-			dispatcher_type::dispatch(state_, event);
-		}*/
-
-		
 		dispatcher_type::dispatch(state_, event);
 	}
 
 private:
 
-	std::list<event_t> pending_;
 	int state_ = 0;
 };
 
