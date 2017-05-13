@@ -253,7 +253,8 @@ private:
 
 using machine4 = v4::machine;
 
-static void machine1_bench(benchmark::State& state) 
+template <class T> void
+state_machine(benchmark::State& state) 
 {
 	std::vector<char> v;
 	for (int i = 0; i < 1024; ++i)
@@ -261,78 +262,20 @@ static void machine1_bench(benchmark::State& state)
 		v.push_back(i % 2 ? 'a' : 'b');
 	}
 
-	machine1 m1;
+	T machine;
 
 	while (state.KeepRunning())
 	{
 		for (size_t i = 0; i < v.size(); ++i)
 		{
-			m1.react(v[i]);
+			machine.react(v[i]);
 		}
 	}
 }
 
-static void machine2_bench(benchmark::State& state) 
-{
-	std::vector<char> v;
-	for (int i = 0; i < 1024; ++i)
-	{
-		v.push_back(i % 2 ? 'a' : 'b');
-	}
-
-	machine2 m2;
-
-	while (state.KeepRunning())
-	{
-		for (size_t i = 0; i < v.size(); ++i)
-		{
-			m2.react(v[i]);
-		}
-	}
-}
-
-static void machine3_bench(benchmark::State& state) 
-{
-	std::vector<char> v;
-	for (int i = 0; i < 1024; ++i)
-	{
-		v.push_back(i % 2 ? 'a' : 'b');
-	}
-
-	machine3 m3;
-
-	while (state.KeepRunning())
-	{
-		for (size_t i = 0; i < v.size(); ++i)
-		{
-			m3.react(v[i]);
-		}
-	}
-}
-
-
-static void machine4_bench(benchmark::State& state) 
-{
-	std::vector<char> v;
-	for (int i = 0; i < 1024; ++i)
-	{
-		v.push_back(i % 2 ? 'a' : 'b');
-	}
-
-	machine4 m4;
-
-	while (state.KeepRunning())
-	{
-		for (size_t i = 0; i < v.size(); ++i)
-		{
-			m4.react(v[i]);
-		}
-	}
-}
-
-BENCHMARK(machine1_bench);
-BENCHMARK(machine2_bench);
-BENCHMARK(machine3_bench);
-BENCHMARK(machine4_bench);
+BENCHMARK_TEMPLATE(state_machine, machine1);
+BENCHMARK_TEMPLATE(state_machine, machine2);
+BENCHMARK_TEMPLATE(state_machine, machine3);
+BENCHMARK_TEMPLATE(state_machine, machine4);
 
 BENCHMARK_MAIN();
