@@ -1,6 +1,9 @@
 #include "benchmark/benchmark_api.h"
 #include "rave/rave.h"
 
+#include <boost/msm/back/state_machine.hpp>
+#include <boost/msm/front/state_machine_def.hpp>
+
 class machine1
 {
 public:
@@ -271,6 +274,96 @@ private:
 
 using machine4 = v4::machine;
 
+namespace v5
+{
+namespace msm = boost::msm;
+namespace mpl = boost::mpl;
+
+struct event
+{
+	char ch;
+};
+
+class machine_def : public msm::front::state_machine_def<machine_def>
+{
+public:
+	template <class Event, class FSM>
+	void on_entry(const Event&, FSM&) 
+	{
+	}
+
+	template <class Event, class FSM>
+	void on_exit(const Event&, FSM&) 
+	{
+	}
+
+	struct as : public msm::front::state<>
+	{
+		template <class Event, class FSM>
+		void on_entry(const Event&, FSM&) {}
+
+		template <class Event, class FSM>
+		void on_exit(const Event&, FSM&) {}
+	};
+
+	struct bs : public msm::front::state<>
+	{
+		template <class Event, class FSM>
+		void on_entry(const Event&, FSM&) {}
+
+		template <class Event, class FSM>
+		void on_exit(const Event&, FSM&) {}
+	};
+
+	typedef as initial_state;
+
+	void process_as(const event&)
+	{
+		++as_;
+	}
+
+	void process_bs(const event&)
+	{
+		++bs_;
+	}
+
+	struct transition_table: mpl::vector<
+		a_row<as, event, bs, &machine_def::process_as>,
+		a_row<bs, event, as, &machine_def::process_bs>
+		> {};
+
+	template <class FSM, class Event>
+	void no_transition(const Event& e, FSM&, int state)
+	{
+	}
+
+private:
+	volatile int as_ = 0;
+	volatile int bs_ = 0;
+};
+
+
+class machine 
+{
+public:
+	machine()
+	{
+		m_.start();
+	}
+
+	void react(char ch)
+	{
+		m_.process_event(event{ch});
+	}
+
+private:
+	msm::back::state_machine<machine_def> m_;
+};
+
+} // namespace v5
+
+using machine5 = v5::machine;
+
 template <class T> void
 state_machine(benchmark::State& state) 
 {
@@ -295,5 +388,7 @@ BENCHMARK_TEMPLATE(state_machine, machine1);
 BENCHMARK_TEMPLATE(state_machine, machine2);
 BENCHMARK_TEMPLATE(state_machine, machine3);
 BENCHMARK_TEMPLATE(state_machine, machine4);
+BENCHMARK_TEMPLATE(state_machine, machine4);
+BENCHMARK_TEMPLATE(state_machine, machine5);
 
 BENCHMARK_MAIN();

@@ -1,5 +1,7 @@
 project(bench CXX)
 
+find_package(Boost)
+
 include_directories (..)
 
 set(SRC bench) 
