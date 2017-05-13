@@ -15,6 +15,11 @@ struct machine
 		state_(this, ch);
 	}
 
+	void transit(void (*new_state)(machine*, char))
+	{
+		state_ = new_state;
+	}
+
 	volatile int as_ = 0;
 	volatile int bs_ = 0;
 	void (*state_)(machine*, char) = as;
@@ -24,10 +29,11 @@ void as(machine* m, char ch)
 {
 	if (ch == 'a')
 	{
+		++m->as_;
 	}
 	else
 	{
-		m->state_ = bs;
+		m->transit(bs);
 		m->react(ch);
 	}
 }
@@ -36,10 +42,11 @@ void bs(machine* m, char ch)
 {
 	if (ch == 'b')
 	{
+		++m->bs_;
 	}
 	else
 	{
-		m->state_ = as;
+		m->transit(as);
 		m->react(ch);
 	}
 
