@@ -5,7 +5,6 @@ include_directories (..)
 
 set(SRC 
   http_parser_tests
-  c_http_parser_tests
   http2_parser_tests
 )
 
