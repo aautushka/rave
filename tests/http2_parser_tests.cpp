@@ -62,14 +62,14 @@ struct get_index<T, type_list<>>
 namespace tdd
 {
 
-template <template <typename> typename new_state, typename machine, template <typename> typename old_state>
+template <template <typename> class new_state, typename machine, template <typename> class old_state>
 void transition(old_state<machine>* state)
 {
 	auto base = static_cast<machine*>(state);
 	base->template transition<new_state>();
 }
 
-template <typename machine, template <typename> typename state>
+template <typename machine, template <typename> class state>
 void post(state<machine>* s, const char* event)
 {
 	auto base = static_cast<machine*>(s);
