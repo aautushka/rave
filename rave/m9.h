@@ -20,7 +20,7 @@ struct as
 	
 	void react(event_b b)
 	{
-		rave2::transition<bs>(this);
+		rave2::transit<bs>(this);
 		rave2::send(this, b);
 	}
 
@@ -34,7 +34,7 @@ struct bs
 {
 	void react(event_a a)
 	{
-		rave2::transition<as>(this);
+		rave2::transit<as>(this);
 		rave2::send(this, a);
 	}
 
