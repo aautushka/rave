@@ -24,6 +24,8 @@ struct as
 		rave2::send(this, b);
 	}
 
+	int get_a() { return as_; }
+
 	volatile int as_ = 0;
 };
 
@@ -40,6 +42,8 @@ struct bs
 	{
 		++bs_;
 	}
+
+	int get_b() { return bs_; }
 
 	volatile int bs_ = 0;
 };

@@ -20,6 +20,9 @@ struct machine
 		state_ = new_state;
 	}
 
+	int get_a() { return as_; }
+	int get_b() { return bs_; }
+
 	volatile int as_ = 0;
 	volatile int bs_ = 0;
 	void (*state_)(machine*, char) = as;

@@ -16,7 +16,8 @@ public:
 			break;
 		case B:
 			state_ = A;
-			++bs_;
+			++as_;
+			break;
 		};
 	}
 
@@ -26,7 +27,8 @@ public:
 		{
 		case A:
 			state_ = B;
-			++as_;
+			++bs_;
+			break;
 		case B:
 			++bs_;
 			break;
@@ -44,6 +46,9 @@ public:
 			process_b();
 		}
 	}
+
+	int get_a() { return as_; }
+	int get_b() { return bs_; }
 
 private:
 	int state_ = A;

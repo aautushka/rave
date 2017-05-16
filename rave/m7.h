@@ -38,6 +38,9 @@ public:
 
 	void react(char ch);
 
+	int get_a() { return as_; }
+	int get_b() { return bs_; }
+
 private:
 	volatile int as_ = 0;
 	volatile int bs_ = 0;

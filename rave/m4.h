@@ -34,6 +34,8 @@ public:
 		}
 	}
 
+	int get_a() { return as_; }
+
 private:
 	volatile int as_ = 0;
 };
@@ -56,6 +58,8 @@ public:
 			base->send(ch);
 		}
 	}
+
+	int get_b() { return bs_; }
 
 private:
 	volatile int bs_ = 0;

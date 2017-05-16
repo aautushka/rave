@@ -24,6 +24,8 @@ struct as
 	}
 
 	volatile int as_ = 0;
+
+	int get_a() { return as_; }
 };
 
 template <typename machine>
@@ -43,6 +45,8 @@ struct bs
 	}
 
 	volatile int bs_ = 0;
+
+	int get_b() { return bs_; }
 };
 
 class machine : public rave::machine<machine, m2::as, m2::bs> {};

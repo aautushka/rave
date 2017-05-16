@@ -21,6 +21,8 @@ class as : public state
 public:
 	virtual void react(machine* m, char ch);
 
+	int get() { return as_; }
+
 private:
 	volatile int as_ = 0;
 };
@@ -29,6 +31,8 @@ class bs : public state
 {
 public:
 	void react(machine* m, char ch);
+
+	int get() { return bs_; }
 private:
 	volatile int bs_ = 0;
 };
@@ -54,6 +58,16 @@ public:
 	void transition(tag<bs>)
 	{
 		state_ = &bs_;
+	}
+
+	int get_a()
+	{
+		return as_.get();
+	}
+
+	int get_b()
+	{
+		return bs_.get();
 	}
 
 private:

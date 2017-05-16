@@ -13,6 +13,7 @@
 #include "rave/m10.h"
 
 #include <random>
+#include <iostream>
 
 std::vector<char> generate_input_seq()
 {

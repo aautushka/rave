@@ -67,6 +67,9 @@ public:
 	{
 	}
 
+	int get_a() { return as_; }
+	int get_b() { return bs_; }
+
 private:
 	volatile int as_ = 0;
 	volatile int bs_ = 0;
@@ -92,6 +95,9 @@ public:
 			m_.process_event(event_b());
 		}
 	}
+
+	int get_a() { return m_.get_a(); }
+	int get_b() { return m_.get_b(); }
 
 private:
 	msm::back::state_machine<machine_def> m_;

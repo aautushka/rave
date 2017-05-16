@@ -5,6 +5,7 @@
 #include <boost/statechart/simple_state.hpp>
 #include <boost/statechart/state.hpp>
 #include <boost/statechart/transition.hpp>
+#include <boost/statechart/custom_reaction.hpp>
 
 namespace m6
 {
@@ -36,33 +37,72 @@ struct machine : sc::state_machine<machine, active>
 			process_event(event_b());
 		}
 	}
+
+	int get_a();
+	int get_b();
+
+	volatile int as_ = 0;
+	volatile int bs_ = 0;
 };
 
 struct active : sc::simple_state<active, machine, as> 
 {
 	volatile int as_ = 0;
 	volatile int bs_ = 0;
+
+	~active()
+	{
+		context<machine>().as_ = as_;
+	}
 };
 
 struct as : sc::simple_state<as, active> 
 {
-	using reactions = sc::transition<event_b, bs>;
+	using reactions = mpl::list<
+		sc::custom_reaction<event_a>,
+		sc::custom_reaction<event_b>>;
 
-	~as()
+	sc::result react(const event_a&)
 	{
 		++context<active>().as_;
+		return transit<as>();
+	}
+
+	sc::result react(const event_b&)
+	{
+		++context<active>().bs_;
+		return transit<bs>();
 	}
 };
 
 struct bs : sc::simple_state<bs, active>
 {
-	using reactions = sc::transition<event_a, as>;
+	using reactions = mpl::list<
+		sc::custom_reaction<event_a>,
+		sc::custom_reaction<event_b>>;
 
-	~bs()
+	sc::result react(const event_a&)
+	{
+		++context<active>().as_;
+		return transit<as>();
+	}
+
+	sc::result react(const event_b&)
 	{
 		++context<active>().bs_;
+		return transit<bs>();
 	}
 };
+
+int machine::get_a()
+{
+	return state_cast<const active&>().as_;
+}
+
+int machine::get_b()
+{
+	return state_cast<const active&>().bs_;
+}
 
 
 } // namespace m6
