@@ -172,13 +172,35 @@ struct machine : public rave2::machine<machine, state_a, state_b>
 {
 };
 ```
+## m10
+Benchmarking a nice minimalistic FSM library: https://github.com/tkem/fsmlite. It must be close to MSM in its implementation:
+```c++
+class machine : public fsmlite::fsm<machine>
+{
+public:
+    friend class fsm;
+    enum states {STATE_A, STATE_B};
+    
+    struct event_a{};
+    struct event_b{};
+    
+    void process_a(const event_a&);
+    void process_b(const event_b&);
+    
+    using transition_table = table<
+        mem_fn_row<STATE_A, event_a, STATE_A, &machine::process_a>,
+        mem_fn_row<STATE_A, event_b, STATE_B, &machine::process_b>,
+        mem_fn_row<STATE_B, event_a, STATE_A, &machine::process_a>,
+        mem_fn_row<STATE_B, event_b, STATE_B, &machine_process_b>>;
+};
+```
 # Conclusions
 * To this day, the good ol' C remains the fastest solution, nothing can really beat it. And nothing would. In the end, we are all trying hard to bring the C performance back to C++.
-* With C++ templates and metaprogramming techniques, the modern compilers do wonders: we can hardly outdo C, but we can get really close. Besides, the code gets more object-oriented, tremendously helping in the long run.
+* With C++ templates and metaprogramming techniques, the modern compilers do wonders: we can hardly outdo C, but we can get really close. Besides, the code gets more object-oriented, tremendously helping in the long run. Some benchmarks show totally unexpected results: like tkem/fsmlite being faster than the simple switch statement. I attribute this to optimizer. I do not really believe in these numbers, so working on disproving them.
 * The classic C++ vtable solution remains viable enough, it's reasonably fast and reasonably nice. But I love templates better. One major downside is the tons of hard to get rid of boilerplate code.
 * Boost MSM is great, but it's a little heavy-weight for my purposes.
 * Boost Statechart does not look that good, performance-wise. I used to use it a lot in production code because of its expressive powers, but one needs to be aware of the performance issues. There are rumors about Statechart's reliance on RTTI, which might be explaining it sluggishness, but one never knows.
-* Don't know why, but std::function is so slow. I will investigate this one more, because the m4 machine should ideally match the m8, both of them are base on same idea. 
+* Don't know why, but std::function is so slow. I will investigate this one more, because the m4 machine should ideally match the m8, both of them are based on same idea. 
 
 
 
