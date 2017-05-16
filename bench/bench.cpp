@@ -48,16 +48,16 @@ state_machine(benchmark::State& state)
 	}
 }
 
-BENCHMARK_TEMPLATE(state_machine, m0::machine);
-BENCHMARK_TEMPLATE(state_machine, m1::machine);
-BENCHMARK_TEMPLATE(state_machine, m2::machine);
-BENCHMARK_TEMPLATE(state_machine, m3::machine);
-BENCHMARK_TEMPLATE(state_machine, m4::machine);
-BENCHMARK_TEMPLATE(state_machine, m5::machine);
-BENCHMARK_TEMPLATE(state_machine, m6::machine);
-BENCHMARK_TEMPLATE(state_machine, m7::machine);
-BENCHMARK_TEMPLATE(state_machine, m8::machine);
+//BENCHMARK_TEMPLATE(state_machine, m0::machine);
+//BENCHMARK_TEMPLATE(state_machine, m1::machine);
+//BENCHMARK_TEMPLATE(state_machine, m2::machine);
+//BENCHMARK_TEMPLATE(state_machine, m3::machine);
+//BENCHMARK_TEMPLATE(state_machine, m4::machine);
+//BENCHMARK_TEMPLATE(state_machine, m5::machine);
+//BENCHMARK_TEMPLATE(state_machine, m6::machine);
+//BENCHMARK_TEMPLATE(state_machine, m7::machine);
+//BENCHMARK_TEMPLATE(state_machine, m8::machine);
 BENCHMARK_TEMPLATE(state_machine, m9::machine);
-BENCHMARK_TEMPLATE(state_machine, m10::machine);
+//BENCHMARK_TEMPLATE(state_machine, m10::machine);
 
 BENCHMARK_MAIN();

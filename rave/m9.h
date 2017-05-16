@@ -7,19 +7,13 @@ namespace m9
 struct event_a{};
 struct event_b{};
 
-struct state
-{
-template <typename T>
-void react(T) { }
-};
-
 template <typename machine>
 struct bs;
 
 template <typename machine>
-struct as : public state
+struct as
 {
-	/* void react(event_a)
+	void react(event_a)
 	{
 		++as_;
 	}
@@ -28,7 +22,7 @@ struct as : public state
 	{
 		rave2::transit<bs>(this);
 		rave2::send(this, b);
-	}*/
+	}
 
 	int get_a() { return as_; }
 

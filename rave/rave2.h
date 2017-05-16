@@ -1,14 +1,50 @@
 #pragma once
 #include "meta.h"
+#include <iostream>
 
 namespace rave2
 {
 
+template <class T>
+auto call_on_exit(T& t, int) -> decltype(t.on_exit(), void())
+{
+	t.on_exit();
+}
+
+template <class T>
+void call_on_exit(T& t, long)
+{
+}
+
+template <typename  T, typename Event>
+auto call_react(T&t, Event event, int) -> decltype(t.react(event), void())
+{
+	t.react(event);
+}
+
+template <typename T, typename Event>
+auto call_react(T&, Event, long)
+{
+}
+
+template <class T>
+auto call_on_entry(T& t, int) -> decltype(t.on_entry(), void())
+{
+	t.on_entry();
+}
+
+template <class T>
+void call_on_entry(T&, long)
+{
+}
+
 template <template <typename> typename new_state, typename machine, template <typename> typename old_state>
 void transit(old_state<machine>* state)
 {
+	call_on_exit(*state, 0);
 	auto base = static_cast<machine*>(state);
 	base->template transit<new_state>();
+	call_on_entry(static_cast<new_state<machine>&>(*base), 0);
 }
 
 template <typename machine, template <typename> typename state, typename Event>
@@ -75,10 +111,12 @@ struct dispatcher<2, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
+			//call_react(static_cast<state0&>(*this), std::move(event), 0);
 			this->state0::react(std::move(event));
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
+			//call_react(static_cast<state1&>(*this), std::move(event), 0);
 			this->state1::react(std::move(event));
 			break;
 		};
@@ -735,6 +773,11 @@ struct dispatcher<15, T> : public T
 			break;
 		};
 	}
+};
+
+struct state
+{
+	template <typename Event> void react(Event) {}
 };
 
 template <typename T, template <class> class ... Ts>
