@@ -16,14 +16,14 @@ void call_on_exit(T& t, long)
 {
 }
 
-template <typename  T, typename Event>
-auto call_react(T&t, Event event, int) -> decltype(t.react(event), void())
+template <typename  T, typename U, typename Event>
+inline auto call_react(U* u, Event event, int) -> decltype(u->T::react(event), void())
 {
-	t.react(event);
+	u->T::react(std::move(event));
 }
 
-template <typename T, typename Event>
-auto call_react(T&, Event, long)
+template <typename  T, typename U, typename Event>
+inline void call_react(U*, Event, long)
 {
 }
 
@@ -92,8 +92,7 @@ struct dispatcher<1, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
-			static_cast<state0*>(this)->react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		};
 	};
@@ -111,13 +110,11 @@ struct dispatcher<2, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			//call_react(static_cast<state0&>(*this), std::move(event), 0);
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			//call_react(static_cast<state1&>(*this), std::move(event), 0);
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		};
 	};
@@ -135,15 +132,15 @@ struct dispatcher<3, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		};
 	}
@@ -161,19 +158,19 @@ struct dispatcher<4, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		};
 	}
@@ -192,23 +189,22 @@ struct dispatcher<5, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
-			break;
+			call_react<state0>(this, event, 0);
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		};
 	}
@@ -226,27 +222,27 @@ struct dispatcher<6, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		case 5:
 			using state5 = typename meta::get_type<5, T>::type;
-			this->state5::react(std::move(event));
+			call_react<state5>(this, event, 0);
 			break;
 		};
 	}
@@ -264,31 +260,31 @@ struct dispatcher<7, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		case 5:
 			using state5 = typename meta::get_type<5, T>::type;
-			this->state5::react(std::move(event));
+			call_react<state5>(this, event, 0);
 			break;
 		case 6:
 			using state6 = typename meta::get_type<6, T>::type;
-			this->state6::react(std::move(event));
+			call_react<state6>(this, event, 0);
 			break;
 		};
 	}
@@ -306,35 +302,35 @@ struct dispatcher<8, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		case 5:
 			using state5 = typename meta::get_type<5, T>::type;
-			this->state5::react(std::move(event));
+			call_react<state5>(this, event, 0);
 			break;
 		case 6:
 			using state6 = typename meta::get_type<6, T>::type;
-			this->state6::react(std::move(event));
+			call_react<state6>(this, event, 0);
 			break;
 		case 7:
 			using state7 = typename meta::get_type<7, T>::type;
-			this->state7::react(std::move(event));
+			call_react<state7>(this, event, 0);
 			break;
 		};
 	}
@@ -352,39 +348,39 @@ struct dispatcher<9, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		case 5:
 			using state5 = typename meta::get_type<5, T>::type;
-			this->state5::react(std::move(event));
+			call_react<state5>(this, event, 0);
 			break;
 		case 6:
 			using state6 = typename meta::get_type<6, T>::type;
-			this->state6::react(std::move(event));
+			call_react<state6>(this, event, 0);
 			break;
 		case 7:
 			using state7 = typename meta::get_type<7, T>::type;
-			this->state7::react(std::move(event));
+			call_react<state7>(this, event, 0);
 			break;
 		case 8:
 			using state8 = typename meta::get_type<8, T>::type;
-			this->state8::react(std::move(event));
+			call_react<state8>(this, event, 0);
 			break;
 		};
 	}
@@ -403,43 +399,43 @@ struct dispatcher<10, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		case 5:
 			using state5 = typename meta::get_type<5, T>::type;
-			this->state5::react(std::move(event));
+			call_react<state5>(this, event, 0);
 			break;
 		case 6:
 			using state6 = typename meta::get_type<6, T>::type;
-			this->state6::react(std::move(event));
+			call_react<state6>(this, event, 0);
 			break;
 		case 7:
 			using state7 = typename meta::get_type<7, T>::type;
-			this->state7::react(std::move(event));
+			call_react<state7>(this, event, 0);
 			break;
 		case 8:
 			using state8 = typename meta::get_type<8, T>::type;
-			this->state8::react(std::move(event));
+			call_react<state8>(this, event, 0);
 			break;
 		case 9:
 			using state9 = typename meta::get_type<9, T>::type;
-			this->state9::react(std::move(event));
+			call_react<state9>(this, event, 0);
 			break;
 		};
 	}
@@ -457,47 +453,47 @@ struct dispatcher<11, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		case 5:
 			using state5 = typename meta::get_type<5, T>::type;
-			this->state5::react(std::move(event));
+			call_react<state5>(this, event, 0);
 			break;
 		case 6:
 			using state6 = typename meta::get_type<6, T>::type;
-			this->state6::react(std::move(event));
+			call_react<state6>(this, event, 0);
 			break;
 		case 7:
 			using state7 = typename meta::get_type<7, T>::type;
-			this->state7::react(std::move(event));
+			call_react<state7>(this, event, 0);
 			break;
 		case 8:
 			using state8 = typename meta::get_type<8, T>::type;
-			this->state8::react(std::move(event));
+			call_react<state8>(this, event, 0);
 			break;
 		case 9:
 			using state9 = typename meta::get_type<9, T>::type;
-			this->state9::react(std::move(event));
+			call_react<state9>(this, event, 0);
 			break;
 		case 10:
 			using state10 = typename meta::get_type<10, T>::type;
-			this->state10::react(std::move(event));
+			call_react<state10>(this, event, 0);
 			break;
 		};
 	}
@@ -515,51 +511,51 @@ struct dispatcher<12, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		case 5:
 			using state5 = typename meta::get_type<5, T>::type;
-			this->state5::react(std::move(event));
+			call_react<state5>(this, event, 0);
 			break;
 		case 6:
 			using state6 = typename meta::get_type<6, T>::type;
-			this->state6::react(std::move(event));
+			call_react<state6>(this, event, 0);
 			break;
 		case 7:
 			using state7 = typename meta::get_type<7, T>::type;
-			this->state7::react(std::move(event));
+			call_react<state7>(this, event, 0);
 			break;
 		case 8:
 			using state8 = typename meta::get_type<8, T>::type;
-			this->state8::react(std::move(event));
+			call_react<state8>(this, event, 0);
 			break;
 		case 9:
 			using state9 = typename meta::get_type<9, T>::type;
-			this->state9::react(std::move(event));
+			call_react<state9>(this, event, 0);
 			break;
 		case 10:
 			using state10 = typename meta::get_type<10, T>::type;
-			this->state10::react(std::move(event));
+			call_react<state10>(this, event, 0);
 			break;
 		case 11:
 			using state11 = typename meta::get_type<11, T>::type;
-			this->state11::react(std::move(event));
+			call_react<state11>(this, event, 0);
 			break;
 		};
 	}
@@ -577,55 +573,55 @@ struct dispatcher<13, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		case 5:
 			using state5 = typename meta::get_type<5, T>::type;
-			this->state5::react(std::move(event));
+			call_react<state5>(this, event, 0);
 			break;
 		case 6:
 			using state6 = typename meta::get_type<6, T>::type;
-			this->state6::react(std::move(event));
+			call_react<state6>(this, event, 0);
 			break;
 		case 7:
 			using state7 = typename meta::get_type<7, T>::type;
-			this->state7::react(std::move(event));
+			call_react<state7>(this, event, 0);
 			break;
 		case 8:
 			using state8 = typename meta::get_type<8, T>::type;
-			this->state8::react(std::move(event));
+			call_react<state8>(this, event, 0);
 			break;
 		case 9:
 			using state9 = typename meta::get_type<9, T>::type;
-			this->state9::react(std::move(event));
+			call_react<state9>(this, event, 0);
 			break;
 		case 10:
 			using state10 = typename meta::get_type<10, T>::type;
-			this->state10::react(std::move(event));
+			call_react<state10>(this, event, 0);
 			break;
 		case 11:
 			using state11 = typename meta::get_type<11, T>::type;
-			this->state11::react(std::move(event));
+			call_react<state11>(this, event, 0);
 			break;
 		case 12:
 			using state12 = typename meta::get_type<12, T>::type;
-			this->state12::react(std::move(event));
+			call_react<state12>(this, event, 0);
 			break;
 		};
 	}
@@ -643,59 +639,59 @@ struct dispatcher<14, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		case 5:
 			using state5 = typename meta::get_type<5, T>::type;
-			this->state5::react(std::move(event));
+			call_react<state5>(this, event, 0);
 			break;
 		case 6:
 			using state6 = typename meta::get_type<6, T>::type;
-			this->state6::react(std::move(event));
+			call_react<state6>(this, event, 0);
 			break;
 		case 7:
 			using state7 = typename meta::get_type<7, T>::type;
-			this->state7::react(std::move(event));
+			call_react<state7>(this, event, 0);
 			break;
 		case 8:
 			using state8 = typename meta::get_type<8, T>::type;
-			this->state8::react(std::move(event));
+			call_react<state8>(this, event, 0);
 			break;
 		case 9:
 			using state9 = typename meta::get_type<9, T>::type;
-			this->state9::react(std::move(event));
+			call_react<state9>(this, event, 0);
 			break;
 		case 10:
 			using state10 = typename meta::get_type<10, T>::type;
-			this->state10::react(std::move(event));
+			call_react<state10>(this, event, 0);
 			break;
 		case 11:
 			using state11 = typename meta::get_type<11, T>::type;
-			this->state11::react(std::move(event));
+			call_react<state11>(this, event, 0);
 			break;
 		case 12:
 			using state12 = typename meta::get_type<12, T>::type;
-			this->state12::react(std::move(event));
+			call_react<state12>(this, event, 0);
 			break;
 		case 13:
 			using state13 = typename meta::get_type<13, T>::type;
-			this->state13::react(std::move(event));
+			call_react<state13>(this, event, 0);
 			break;
 		};
 	}
@@ -713,63 +709,63 @@ struct dispatcher<15, T> : public T
 		{
 		case 0:
 			using state0 = typename meta::get_type<0, T>::type;
-			this->state0::react(std::move(event));
+			call_react<state0>(this, event, 0);
 			break;
 		case 1:
 			using state1 = typename meta::get_type<1, T>::type;
-			this->state1::react(std::move(event));
+			call_react<state1>(this, event, 0);
 			break;
 		case 2:
 			using state2 = typename meta::get_type<2, T>::type;
-			this->state2::react(std::move(event));
+			call_react<state2>(this, event, 0);
 			break;
 		case 3:
 			using state3 = typename meta::get_type<3, T>::type;
-			this->state3::react(std::move(event));
+			call_react<state3>(this, event, 0);
 			break;
 		case 4:
 			using state4 = typename meta::get_type<4, T>::type;
-			this->state4::react(std::move(event));
+			call_react<state4>(this, event, 0);
 			break;
 		case 5:
 			using state5 = typename meta::get_type<5, T>::type;
-			this->state5::react(std::move(event));
+			call_react<state5>(this, event, 0);
 			break;
 		case 6:
 			using state6 = typename meta::get_type<6, T>::type;
-			this->state6::react(std::move(event));
+			call_react<state6>(this, event, 0);
 			break;
 		case 7:
 			using state7 = typename meta::get_type<7, T>::type;
-			this->state7::react(std::move(event));
+			call_react<state7>(this, event, 0);
 			break;
 		case 8:
 			using state8 = typename meta::get_type<8, T>::type;
-			this->state8::react(std::move(event));
+			call_react<state8>(this, event, 0);
 			break;
 		case 9:
 			using state9 = typename meta::get_type<9, T>::type;
-			this->state9::react(std::move(event));
+			call_react<state9>(this, event, 0);
 			break;
 		case 10:
 			using state10 = typename meta::get_type<10, T>::type;
-			this->state10::react(std::move(event));
+			call_react<state10>(this, event, 0);
 			break;
 		case 11:
 			using state11 = typename meta::get_type<11, T>::type;
-			this->state11::react(std::move(event));
+			call_react<state11>(this, event, 0);
 			break;
 		case 12:
 			using state12 = typename meta::get_type<12, T>::type;
-			this->state12::react(std::move(event));
+			call_react<state12>(this, event, 0);
 			break;
 		case 13:
 			using state13 = typename meta::get_type<13, T>::type;
-			this->state13::react(std::move(event));
+			call_react<state13>(this, event, 0);
 			break;
 		case 14:
 			using state14 = typename meta::get_type<14, T>::type;
-			this->state14::react(std::move(event));
+			call_react<state14>(this, event, 0);
 			break;
 		};
 	}

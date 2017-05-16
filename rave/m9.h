@@ -13,15 +13,15 @@ struct bs;
 template <typename machine>
 struct as
 {
-	void react(event_a)
+	inline void react(event_a)
 	{
 		++as_;
 	}
-	
-	void react(event_b b)
+
+	inline void react(event_b)
 	{
 		rave2::transit<bs>(this);
-		rave2::send(this, b);
+		rave2::send(this, event_b());
 	}
 
 	int get_a() { return as_; }
@@ -32,10 +32,10 @@ struct as
 template <typename machine>
 struct bs
 {
-	void react(event_a a)
+	void react(event_a)
 	{
 		rave2::transit<as>(this);
-		rave2::send(this, a);
+		rave2::send(this, event_a());
 	}
 
 	void react(event_b)
