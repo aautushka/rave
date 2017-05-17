@@ -5,6 +5,27 @@
 namespace rave2
 {
 
+template <typename T>
+auto test_on_exit(int) -> decltype(std::declval<T>().on_exit(), std::true_type());
+
+template <typename T>
+std::false_type test_on_exit(long);
+
+template <typename T>
+struct has_on_exit
+{
+	enum { value = std::is_same<decltype(test_on_exit<T>(0)), std::true_type>::value };
+};
+
+namespace test
+{
+struct test_struct_a {};
+struct test_struct_b { void on_exit() {} };
+
+static_assert(!has_on_exit<test_struct_a>::value, "");
+static_assert(has_on_exit<test_struct_b>::value, "");
+} // namespace test
+
 template <class T>
 auto call_on_exit(T& t, int) -> decltype(t.on_exit(), void())
 {
@@ -17,13 +38,13 @@ void call_on_exit(T& t, long)
 }
 
 template <typename  T, typename U, typename Event>
-inline auto call_react(U* u, Event event, int) -> decltype(u->T::react(event), void())
+auto call_react(U* u, Event event, int) -> decltype(u->T::react(event), void())
 {
 	u->T::react(std::move(event));
 }
 
 template <typename  T, typename U, typename Event>
-inline void call_react(U*, Event, long)
+void call_react(U*, Event, long)
 {
 }
 
