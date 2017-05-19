@@ -101,16 +101,61 @@ struct state_b : sc::simple_state<state_b, active> {};
 ```
 
 ## m7
-A simple C++ state-machine inspider by Gerhard Reitmayr's https://github.com/GerhardR/fsm. 
+A simple C++ state-machine inspided by Gerhard Reitmayr's https://github.com/GerhardR/fsm. It uses a neat metaprogramming trick to dispach an event to appropriate handler defined but a template function specialization.
 ```c++
+struct machine
+{
+    template <int State> void react(event);
+};
+
+template<> void machine::react<STATE_A>(event);
+template<> void machine::react<STATE_A>(event);
 ```
 
 ## m8
+This is another C state-machine which uses a function pointer for tracking states and dispatching events. Essensially it's the same technique used in C++ vtables, bur rather implemented in the most straightforward way without the C++ machinery.
 ```c++
+struct machine
+{
+    void (state*)(event);
+};
+
+void process_state_a(event);
+void process_state_b(event);
 ```
 
 ## m9
+The second take on m2 machine, slightly improved (now the machine can dispatch events of different types, instead of single event type in m2.
 ```c++
+struct event_a{};
+struct event_b{};
+
+template <class machine>
+struct state_a
+{
+    void react(state_a);
+    void react(state_b);
+};
+
+template <class machine>
+struct state_b
+{
+    void react(state_a);
+    void react(state_b);
+};
+
+struct machine : public rave2::machine<machine, state_a, state_b>
+{
+};
 ```
+# Conclusions
+* To this day, the good ol' C remains the fastest solution, nothing can really beat it. And nothing would. In the end we are all trying hard to bring the C performance back to C++
+* With C++ templates and metaprogramming techniques modern compilers do wonders: we can hardly outdo C, but we can get close. Besides the code gets more object-oriented, tremendously helping in the long run
+* The classic C++ vtable solution remains viable enough, it's reasonably fast and reasonably nice. But I love templates better. One major downside is the tons of boilerplate code.
+* Boost MSM is great, but it's a little heavy-weight for my purposes.
+* Boost Statechart does not look great performance-wise. I used to use it a lot in production code because of its expressive power, but one needs to be aware of its performance
+* Don't know why, but std::function is so slow. I will investigate this one more.
+
+
 
 
