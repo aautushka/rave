@@ -85,7 +85,18 @@ using machine = boost::msm::back::state_machine<def>;
 ```
 
 ## m6
+A Boost.Statechart machine. By far the slowest.
 ```c++
+namespace sc = boost::statechart;
+
+struct machine : sc::state_machine<machine, active> {};
+
+struct active : sc::simple_state<active, machine, state_a>{};
+
+struct state_a : sc::simple_state<state_a, active> {};
+
+struct state_b : sc::simple_state<state_b, active> {};
+
 ```
 
 ## m7
