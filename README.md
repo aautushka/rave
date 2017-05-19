@@ -65,6 +65,22 @@ struct machine
 ## m4
 Another attempt in emulating the switch-based machine, but with std::function as a primary dispatching mechanism
 ```c++
+template <class machine>
+struct state_a
+{
+    void react(event);
+};
+
+template <class machine>
+struct state_b
+{
+    void react(event);
+}
+
+class machine : public state_a, public state_b
+{
+    std::function<void(event>) state_;
+};
 ```
 
 ## m5
@@ -149,12 +165,12 @@ struct machine : public rave2::machine<machine, state_a, state_b>
 };
 ```
 # Conclusions
-* To this day, the good ol' C remains the fastest solution, nothing can really beat it. And nothing would. In the end we are all trying hard to bring the C performance back to C++
-* With C++ templates and metaprogramming techniques modern compilers do wonders: we can hardly outdo C, but we can get close. Besides the code gets more object-oriented, tremendously helping in the long run
-* The classic C++ vtable solution remains viable enough, it's reasonably fast and reasonably nice. But I love templates better. One major downside is the tons of boilerplate code.
+* To this day, the good ol' C remains the fastest solution, nothing can really beat it. And nothing would. In the end we are all trying hard to bring the C performance back to C++.
+* With C++ templates and metaprogramming techniques, the modern compilers do wonders: we can hardly outdo C, but we can get close. Besides the code gets more object-oriented, tremendously helping in the long run.
+* The classic C++ vtable solution remains viable enough, it's reasonably fast and reasonably nice. But I love templates better. One major downside is the tons of hard to get rid of boilerplate code.
 * Boost MSM is great, but it's a little heavy-weight for my purposes.
-* Boost Statechart does not look great performance-wise. I used to use it a lot in production code because of its expressive power, but one needs to be aware of its performance
-* Don't know why, but std::function is so slow. I will investigate this one more.
+* Boost Statechart does not look that good, performance-wise. I used to use it a lot in production code because of its expressive powers, but one needs to be aware of performance issues. There are rumors about Statechart's reliance on RTTI, which might be an explanation, but one never knows.
+* Don't know why, but std::function is so slow. I will investigate this one more, because the m4 machine should ideally match the m8, both of them are base on same idea. 
 
 
 
