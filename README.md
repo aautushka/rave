@@ -1,5 +1,5 @@
 # rave
-The goal is to implement a simple yet fast C++ state-machine. Writing boilerplate code is no fun, yet using the all-powerful Boost libraries (boost.statechart and boost.msm) may be an overkill in most applications. I usually resign to using the C-style switch-based state-machine, because it's fast, easy to debug, understand and reason about. 
+The goal is to find a simple yet fast C++ state-machine. Writing boilerplate code is no fun, yet using the all-powerful Boost libraries (boost.statechart and boost.msm) may be an overkill in most applications. I usually resign to using the C-style switch-based state-machine, because it's fast, easy to debug, understand and reason about. 
 
 This is the benchmarking results (using google benchmark library). Reproduced on ArchLinux + GCC 6.3.1 (make sure it's a Release build: cmake -DCMAKE_BUILD_TYPE=Release ..)
 
@@ -13,7 +13,7 @@ It's not even a state-machine, it's an if-statement. Nothing can be faster than 
 struct machine
 {
     void process_a();
-    void process_b()
+    void process_b();
     
     void react(event)
     {
@@ -30,7 +30,7 @@ struct machine
 ```
 
 ## m1
-The most primitive state machine imaginagle, just one stupid switch:
+The most primitive state-machine imaginagle, just one switch statement:
 ```c++
 switch (state)
 {
@@ -195,7 +195,7 @@ struct machine : public rave2::machine<machine, state_a, state_b>
 };
 ```
 ## m10
-Benchmarking a nice minimalistic FSM library: https://github.com/tkem/fsmlite. It must be close to MSM in its implementation:
+Benchmarking a nice minimalistic FSM library: https://github.com/tkem/fsmlite. It must be close to Boost MSM in its implementation, at least the interface looks similar, yet it's faster than Boost MSM:
 ```c++
 class machine : public fsmlite::fsm<machine>
 {
