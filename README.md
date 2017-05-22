@@ -200,7 +200,7 @@ public:
 * The classic C++ vtable solution remains viable enough, it's reasonably fast and reasonably nice. But I love templates better. One major downside is the tons of hard to get rid of boilerplate code.
 * Boost MSM is great, but it's a little heavy-weight for my purposes.
 * Boost Statechart does not look that good, performance-wise. I used to use it a lot in production code because of its expressive powers, but one needs to be aware of the performance issues. There are rumors about Statechart's reliance on RTTI, which might be explaining it sluggishness, but one never knows.
-* Don't know why, but std::function is so slow. I will investigate this one more, because the m4 machine should ideally match the m8, both of them are base on same idea. 
+* Don't know why, but std::function is so slow. I will investigate this one more, because the m4 machine should ideally match the m8, both of them are based on same idea. 
 
 
 
