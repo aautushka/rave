@@ -94,7 +94,15 @@ struct event_b() {};
 
 class def : public msm::front::state_machine_def<def> 
 {
-    ...
+    struct transition_table: mpl::vector<
+        a_row<state_a, event_a, state_a, &def::process_a>,
+        a_row<state_a, event_b, state_b, &def::process_b>,
+        a_row<state_b, event_a, state_a, &def::process_a>,
+        a_row<state_b, event_b, state_b, &def::process_b>
+    > {};
+    
+    void process_a(event_a);
+    void process_b(event_b);
 };
 
 using machine = boost::msm::back::state_machine<def>;
