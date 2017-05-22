@@ -5,7 +5,29 @@ This is the benchmarking results (using google benchmark library). Reproduced on
 
 ![Screenshot](bench.png)
 
-Now, what do these m1 ... m9 mean. 
+Now, what do these m0 ... m10 mean. 
+
+## m0
+It's not even a state-machine, it's an if-statement. Nothing can be faster than this:
+```c++
+struct machine
+{
+    void process_a();
+    void process_b()
+    
+    void react(event)
+    {
+        if (event == event_a)
+        {
+            process_a();
+        }
+        else if
+        {
+            process_b();
+        }
+    }
+};
+```
 
 ## m1
 The most primitive state machine imaginagle, just one stupid switch:
@@ -195,8 +217,8 @@ public:
 };
 ```
 # Conclusions
-* To this day, the good ol' C remains the fastest solution, nothing can really beat it. And nothing would. In the end, we are all trying hard to bring the C performance back to C++.
-* With C++ templates and metaprogramming techniques, the modern compilers do wonders: we can hardly outdo C, but we can get really close. Besides, the code gets more object-oriented, tremendously helping in the long run. Some benchmarks show totally unexpected results: like tkem/fsmlite being faster than the simple switch statement. I attribute this to optimizer. I do not really believe in these numbers, so working on disproving them.
+* To this day, the good ol' C remains the fastest solution, nothing can really beat it. And nothing would. In the end, we are all trying hard to bring the C performance back to C++. However, one C code is different from another, both in performance and clarity.
+* With C++ templates and metaprogramming techniques, the modern compilers do wonders: we can hardly outdo C, but we can get really close. Besides, the code gets more object-oriented, tremendously helping in the long run. Some benchmarks show totally wondrous results: like tkem/fsmlite being faster than the simple switch statement. The C++ optimizer is very good at its job. 
 * The classic C++ vtable solution remains viable enough, it's reasonably fast and reasonably nice. But I love templates better. One major downside is the tons of hard to get rid of boilerplate code.
 * Boost MSM is great, but it's a little heavy-weight for my purposes.
 * Boost Statechart does not look that good, performance-wise. I used to use it a lot in production code because of its expressive powers, but one needs to be aware of the performance issues. There are rumors about Statechart's reliance on RTTI, which might be explaining it sluggishness, but one never knows.
