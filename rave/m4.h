@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include "function_ref.h"
 
 namespace m4
 {
@@ -70,12 +71,12 @@ class machine : public as<machine>, public bs<machine>
 public:
 	machine()
 	{
-		state_ = [=](char input){this->as::react(input);};
+        transition(state<as<machine>>());
 	}
 
 	void react(char ch)
 	{
-		state_(ch);
+		state_(*this, ch);
 	}
 
 	void send(char ch)
@@ -86,12 +87,16 @@ public:
 	template <typename state>
 	void transition(state)
 	{
-		using state_type = typename state::type;
-		state_ = [=](char input){this->state_type::react(input);};
+		state_ = [](machine& m, char input) -> void
+        {
+            using state_type = typename state::type;
+            m.state_type::react(input);
+        };
+        assert(state_.can_be_stored());
 	}
 
 private:
-	std::function<void(char)> state_;
+    haisu::function_ref<void(machine&, char)> state_;
 };
 
 } // namspace m4

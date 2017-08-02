@@ -1,4 +1,4 @@
-#include "benchmark/benchmark_api.h"
+#include "benchmark/benchmark.h"
 
 #include "rave/m0.h"
 #include "rave/m1.h"
