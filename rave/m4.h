@@ -92,7 +92,7 @@ public:
             using state_type = typename state::type;
             m.state_type::react(input);
         };
-        assert(state_.can_be_stored());
+        assert(state_.safe_to_store());
 	}
 
 private:
