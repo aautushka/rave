@@ -1,4 +1,12 @@
 language: c++
+sudo: false
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-6
 
 compiler:
   - gcc
@@ -9,6 +17,8 @@ before_script:
   - cd build
   - cmake ..
     
-script: make && tests/tests
+script: 
+  - CXX=/usr/bin/g++-6 CC=/usr/bin/gcc-6 cmake .
+  - cmake --build .
 
 
