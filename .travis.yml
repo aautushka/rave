@@ -7,10 +7,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-6
-
-compiler:
-  - gcc
-  - clang
+      - libgtest-dev
 
 before_script:
   - mkdir build
