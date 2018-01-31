@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/deftio/travis-ci-cpp-example.svg?branch=master)](https://travis-ci.org/deftio/travis-ci-cpp-example)
+[![Build Status](https://travis-ci.org/aautushka/rave.svg?branch=master)](https://travis-ci.org/aautushka/rave)
 
 
 # rave
