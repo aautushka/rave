@@ -49,11 +49,6 @@ struct active : sc::simple_state<active, machine, as>
 {
 	volatile int as_ = 0;
 	volatile int bs_ = 0;
-
-	~active()
-	{
-		context<machine>().as_ = as_;
-	}
 };
 
 struct as : sc::simple_state<as, active> 
