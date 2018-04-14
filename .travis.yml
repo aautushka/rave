@@ -11,7 +11,7 @@ addons:
 
 script: 
   - cmake -DBENCHMARK_ENABLE_TESTING=OFF -DCMAKE_CXX_COMPILER=/usr/bin/g++-6 -DCMAKE_CC_COMPILER=/usr/bin/gcc-6 .
-  - cmake --build 
+  - cmake --build .
   - ./tests/tests
   - ./bench/bench
 
