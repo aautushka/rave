@@ -224,8 +224,8 @@ public:
 * With C++ templates and metaprogramming techniques, the modern compilers do wonders: we can hardly outdo C, but we can get really close. Besides, the code gets more object-oriented, tremendously helping in the long run. Some benchmarks show totally wondrous results: like [tkem/fsmlite](https://github.com/tkem/fsmlite) being faster than the simple switch statement. The C++ optimizer is very good at its job. 
 * The classic C++ vtable solution remains viable enough, it's reasonably fast and reasonably nice. But I love templates better. One major downside is the tons of hard to get rid of boilerplate code.
 * Boost MSM is great, but it's a little heavy-weight for my purposes.
-* Boost Statechart does not look that good, performance-wise. I used to use it a lot in production code because of its expressive powers, but one needs to be aware of the performance issues. There are rumors about Statechart's reliance on RTTI, which might be explaining it sluggishness, but one never knows.
-* std::function is so slow, that's because of all heap allocations I presume. Ideally, the m4 should ideally the m8, both of them are based on same idea, I think this could be accomplished by using the function ref (see function_ref, function_view).
+* Boost Statechart does not look that good, performance-wise. I used to use it a lot in production code because of its expressive powers, but one needs to be aware of the performance issues. There are rumors about Statechart's reliance on RTTI, which might be explaining it sluggishness, but one never knows. Besides, I have a bias and my implementation could be very sloppy indeed. 
+* std::function is so slow, that's because of all heap allocations I presume. Ideally, the m4 should match the m8, since both of them are based on same idea, I think this could be accomplished by using the function ref (see function_ref, function_view).
 
 
 
